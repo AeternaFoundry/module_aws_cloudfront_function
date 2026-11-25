@@ -23,6 +23,14 @@ EOT
     tags                         = optional(map(string))
     tags_all                     = optional(map(string))
   }))
-  # Note: 2 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
+  validation {
+    condition = alltrue([
+      for k, v in var.cloudfront_functions : (
+        length(v.code) >= 1 && length(v.code) <= 40960
+      )
+    ])
+    error_message = "must be between 1 and 40960 characters"
+  }
+  # Note: 4 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 
